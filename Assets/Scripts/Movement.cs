@@ -3,33 +3,62 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-
+[RequireComponent (typeof(CharacterController))]
 public class Movement : MonoBehaviour
 {
     
     Rigidbody m_rigidbody;
-    public float m_force=1;
-    private Vector3 movement;
+    public float m_Speed=10f;
+    public float rotationSpeed = 5f;
+    private Vector3 m_dir;
     bool m_IsMoving = false;
     public GameObject m_Camera;
     public GameObject m_Renderer;
-
-
+    CharacterController m_CharacterController;
+    bool m_OnGround;
+    float m_time = 0f;
+    public float m_VerticalSpeed = 0.0f;
+    
     // Start is called before the first frame update
     void Start()
     {
         m_rigidbody = GetComponent<Rigidbody>();
-        
+        m_CharacterController = GetComponent<CharacterController>();
+
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (m_IsMoving)
+        MovePlayer();
+        RotatePlayerWithCamera();
+    }
+    public void MovePlayer()
+    {
+        Vector3 l_Movement = m_dir * m_Speed * Time.deltaTime;
+        CollisionFlags l_CollisionFlags = m_CharacterController.Move(l_Movement);
+        if ((l_CollisionFlags & CollisionFlags.Below) != 0)//Colisiona con el suelo
         {
-            m_rigidbody.AddForce(movement * m_force, ForceMode.Force);
+            m_OnGround = true;
+            m_VerticalSpeed = 0.0f;
+            m_time = Time.time;
+        }
+        else
+        {
+            if (Time.time - m_time > 0.3)
+            {
+                m_OnGround = false;
+            }
         }
     }
+    public void RotatePlayerWithCamera()
+    {
+        float targetAngle = m_Camera.transform.rotation.eulerAngles.y;
+        Quaternion desiredRotation = Quaternion.EulerAngles(0, targetAngle, 0);
+        transform.rotation = Quaternion.Lerp(transform.rotation, desiredRotation, rotationSpeed * Time.deltaTime);
+    }
+    #region inputs
     public void OnMove(InputAction.CallbackContext context)
     {
         Vector3 l_Forward = m_Camera.transform.forward;
@@ -42,22 +71,22 @@ public class Movement : MonoBehaviour
         switch (context)
         {
             case var value when !context.canceled:
-            movement = Vector3.zero;
+            m_dir = Vector3.zero;
             if (context.ReadValue<Vector2>().x > 0)
             {
-                    movement += l_Right;
+                    m_dir += l_Right;
             }
             else if (context.ReadValue<Vector2>().x < 0)
             {
-                    movement -= l_Right;
+                    m_dir -= l_Right;
             }
 
             if (context.ReadValue<Vector2>().y > 0)
-                movement += l_Forward;
+                m_dir += l_Forward;
             else if (context.ReadValue<Vector2>().y < 0)
-                movement -= l_Forward;
+                m_dir -= l_Forward;
 
-                movement.Normalize();
+                m_dir.Normalize();
                 m_IsMoving = true;
                     break;
             case var value when context.canceled:
@@ -76,6 +105,7 @@ public class Movement : MonoBehaviour
     {
         throw new System.NotImplementedException();
     }
+    #endregion
 }
 
 
