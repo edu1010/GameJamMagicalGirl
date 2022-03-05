@@ -15,10 +15,14 @@ public class Movement : MonoBehaviour
     public GameObject m_Camera;
     public GameObject m_Renderer;
     CharacterController m_CharacterController;
-    bool m_OnGround;
     float m_time = 0f;
+    [Header("Jump")]
     public float m_VerticalSpeed = 0.0f;
-    
+    public float m_GravityMultiplayer = 10.0f;
+    public float m_JumpForce = 10f;
+    bool m_OnGround;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,6 +41,8 @@ public class Movement : MonoBehaviour
     public void MovePlayer()
     {
         Vector3 l_Movement = m_dir * m_Speed * Time.deltaTime;
+        m_VerticalSpeed += Physics.gravity.y * m_GravityMultiplayer * Time.deltaTime;
+        l_Movement.y = m_VerticalSpeed * Time.deltaTime ;
         CollisionFlags l_CollisionFlags = m_CharacterController.Move(l_Movement);
         if ((l_CollisionFlags & CollisionFlags.Below) != 0)//Colisiona con el suelo
         {
@@ -51,12 +57,15 @@ public class Movement : MonoBehaviour
                 m_OnGround = false;
             }
         }
+        if ((l_CollisionFlags & CollisionFlags.Above) != 0 && m_VerticalSpeed > 0.0f)
+            m_VerticalSpeed = 0.0f;
     }
     public void RotatePlayerWithCamera()
     {
         float targetAngle = m_Camera.transform.rotation.eulerAngles.y;
         Quaternion desiredRotation = Quaternion.EulerAngles(0, targetAngle, 0);
         transform.rotation = Quaternion.Lerp(transform.rotation, desiredRotation, rotationSpeed * Time.deltaTime);
+        transform.rotation = desiredRotation;
     }
     #region inputs
     public void OnMove(InputAction.CallbackContext context)
@@ -91,11 +100,27 @@ public class Movement : MonoBehaviour
                     break;
             case var value when context.canceled:
                 m_IsMoving = false;
+                m_dir = Vector3.zero;
                 break;
             
         }
     }
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        switch (context)
+        {
+            case var value when !context.canceled:
+                if (m_OnGround)
+                {
+                    m_VerticalSpeed = m_JumpForce;
+                }
+                break;
+            case var value when context.canceled:
+                break;
 
+        }
+
+    }
     public void OnLook(InputAction.CallbackContext context)
     {
         throw new System.NotImplementedException();
