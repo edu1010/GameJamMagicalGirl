@@ -19,6 +19,7 @@ public class Movement : MonoBehaviour
     [Header("Jump")]
     public float m_VerticalSpeed = 0.0f;
     public float m_GravityMultiplayer = 10.0f;
+    GravityController m_gravityController;
     public float m_JumpForce = 10f;
     bool m_OnGround;
 
@@ -28,7 +29,7 @@ public class Movement : MonoBehaviour
     {
         m_rigidbody = GetComponent<Rigidbody>();
         m_CharacterController = GetComponent<CharacterController>();
-
+        m_gravityController = GetComponent<GravityController>();
 
     }
 
@@ -66,6 +67,10 @@ public class Movement : MonoBehaviour
         Quaternion desiredRotation = Quaternion.EulerAngles(0, targetAngle, 0);
         transform.rotation = Quaternion.Lerp(transform.rotation, desiredRotation, rotationSpeed * Time.deltaTime);
         transform.rotation = desiredRotation;
+    }
+    public void SetGravityMultiplayer( float g)
+    {
+        m_GravityMultiplayer = g;
     }
     #region inputs
     public void OnMove(InputAction.CallbackContext context)
@@ -112,10 +117,13 @@ public class Movement : MonoBehaviour
             case var value when !context.canceled:
                 if (m_OnGround)
                 {
+                    m_gravityController.GravityOnGround();
                     m_VerticalSpeed = m_JumpForce;
+                    m_gravityController.PressJump();
                 }
                 break;
             case var value when context.canceled:
+                m_gravityController.RelesJump();
                 break;
 
         }
