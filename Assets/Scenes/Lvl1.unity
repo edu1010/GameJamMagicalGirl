@@ -272,7 +272,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Speed: 10
-  rotationSpeed: 1
+  rotationSpeed: 10
   m_Camera: {fileID: 1891407643}
   m_Renderer: {fileID: 807494185}
   m_VerticalSpeed: 0
@@ -395,7 +395,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_MaxGravityMultiplayer: 10
   m_MinGravityMultiplayer: 10
-  m_GravityLongJump: 2
+  m_GravityLongJump: 5
   m_GravityShortJump: 10
   m_TimePreesLong: 1.2
   m_CurrentTimeInAir: 0
@@ -794,7 +794,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1891407643}
   m_LocalRotation: {x: 0.08717227, y: -0.89959055, z: 0.21045247, w: 0.3726226}
-  m_LocalPosition: {x: 2.4830031, y: 3.6582897, z: 3.841953}
+  m_LocalPosition: {x: 2.1421664, y: 3.65829, z: 4.1827903}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -912,11 +912,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8689088924808629010, guid: 07458d4f6d58a4e4d958eceb00c3002f, type: 3}
       propertyPath: m_AmplitudeGain
-      value: 0.7
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 8689088924808629010, guid: 07458d4f6d58a4e4d958eceb00c3002f, type: 3}
       propertyPath: m_FrequencyGain
-      value: 0.7
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8689088925131059897, guid: 07458d4f6d58a4e4d958eceb00c3002f, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8689088925131059900, guid: 07458d4f6d58a4e4d958eceb00c3002f, type: 3}
       propertyPath: m_Name
@@ -928,15 +932,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8689088925131059902, guid: 07458d4f6d58a4e4d958eceb00c3002f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.4830031
+      value: 2.1421664
       objectReference: {fileID: 0}
     - target: {fileID: 8689088925131059902, guid: 07458d4f6d58a4e4d958eceb00c3002f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.6582897
+      value: 3.65829
       objectReference: {fileID: 0}
     - target: {fileID: 8689088925131059902, guid: 07458d4f6d58a4e4d958eceb00c3002f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.841953
+      value: 4.1827903
       objectReference: {fileID: 0}
     - target: {fileID: 8689088925131059902, guid: 07458d4f6d58a4e4d958eceb00c3002f, type: 3}
       propertyPath: m_LocalRotation.w

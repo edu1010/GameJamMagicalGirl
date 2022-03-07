@@ -64,9 +64,9 @@ public class Movement : MonoBehaviour
     public void RotatePlayerWithCamera()
     {
         float targetAngle = m_Camera.transform.rotation.eulerAngles.y;
-        Quaternion desiredRotation = Quaternion.EulerAngles(0, targetAngle, 0);
+        Quaternion desiredRotation = Quaternion.Euler(0, targetAngle, 0);
         transform.rotation = Quaternion.Lerp(transform.rotation, desiredRotation, rotationSpeed * Time.deltaTime);
-        transform.rotation = desiredRotation;
+       
     }
     public void SetGravityMultiplayer( float g)
     {
@@ -117,7 +117,7 @@ public class Movement : MonoBehaviour
             case var value when !context.canceled:
                 if (m_OnGround)
                 {
-                    m_gravityController.GravityOnGround();
+                    m_gravityController.GravityOnGround();  
                     m_VerticalSpeed = m_JumpForce;
                     m_gravityController.PressJump();
                 }
