@@ -19,7 +19,7 @@ public class DamageTakerPlayer : MonoBehaviour
 
     public void Die()
     {
-        GameController.GetGameController().ShowDeathHud();
+       // GameController.GetGameController().ShowDeathHud();
         hp.OnDeath -= Die;
         Debug.Log("veces");
     }
