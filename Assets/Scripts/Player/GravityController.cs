@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GravityController : MonoBehaviour
 {
-    public float MaxGravity = 10f;
+    public float MaxGravityMultiplayer = 10f;
     // Start is called before the first frame update
     void Start()
     {
