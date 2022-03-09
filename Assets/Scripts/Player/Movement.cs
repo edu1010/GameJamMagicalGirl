@@ -3,7 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent (typeof(CharacterController))]
+public enum PlayerStates
+{
+    Shooter,
+    HackAndSlash
+}
+[RequireComponent(typeof(CharacterController))]
 public class Movement : MonoBehaviour
 {
     
@@ -22,22 +27,45 @@ public class Movement : MonoBehaviour
     GravityController m_gravityController;
     public float m_JumpForce = 10f;
     bool m_OnGround;
-
-
+    PlayerStates m_PlayerStates = PlayerStates.Shooter;
+    int m_CurrentState = 0;
+    bool m_attackPressed = false;
+    [Header("Hack and Slash")]
+    public GameObject m_LeftHand;
+    public GameObject m_RightHand;
+    Animator m_AnimatorLeft;
+    Animator m_AnimatorRight;
+    public int m_CurrentCombo = 0;
     // Start is called before the first frame update
     void Start()
     {
         m_rigidbody = GetComponent<Rigidbody>();
         m_CharacterController = GetComponent<CharacterController>();
         m_gravityController = GetComponent<GravityController>();
-
+        m_PlayerStates = PlayerStates.Shooter;
+        m_AnimatorLeft = m_LeftHand.GetComponent<Animator>();
+        m_AnimatorRight = m_RightHand.GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        MovePlayer();
-        RotatePlayerWithCamera();
+        switch (m_PlayerStates)
+        {
+            case (PlayerStates.Shooter):
+                MovePlayer();
+                RotatePlayerWithCamera();
+                break;
+            case (PlayerStates.HackAndSlash):
+                MovePlayer();
+                RotatePlayerWithCamera();
+                if (m_attackPressed)
+                {
+                    AttackCombo();
+                }
+                break;
+        }
+        
     }
     public void MovePlayer()
     {
@@ -71,6 +99,26 @@ public class Movement : MonoBehaviour
     public void SetGravityMultiplayer( float g)
     {
         m_GravityMultiplayer = g;
+    }
+    public void AttackCombo()
+    {
+       
+        if (m_AnimatorLeft.GetCurrentAnimatorStateInfo(0).IsName("LeftHandstatic") 
+            &&
+            m_AnimatorRight.GetCurrentAnimatorStateInfo(0).IsName("RightHandStatic")
+            )
+        {
+            m_CurrentCombo += 1;
+            if (m_CurrentCombo % 2 != 0)
+            {
+                m_AnimatorLeft.SetTrigger("attack");
+            }
+            else
+            {
+                m_AnimatorRight.SetTrigger("attack");
+            }
+        }
+        
     }
     #region inputs
     public void OnMove(InputAction.CallbackContext context)
@@ -134,9 +182,33 @@ public class Movement : MonoBehaviour
         throw new System.NotImplementedException();
     }
 
+    public void OnChangeMode(InputAction.CallbackContext context)
+    {
+        if (m_PlayerStates == 0)
+        {
+            m_PlayerStates = PlayerStates.HackAndSlash;
+        }
+        else
+        {
+            m_PlayerStates = PlayerStates.Shooter;
+        }
+
+        Debug.Log("mouse " + m_PlayerStates);
+    }
+
+
     public void OnFire(InputAction.CallbackContext context)
     {
-        throw new System.NotImplementedException();
+        switch (context)
+        {
+            case var value when !context.canceled:
+                m_attackPressed = true;
+                break;
+            case var value when context.canceled:
+                m_attackPressed = false;
+                break;
+
+        }
     }
     #endregion
 }
