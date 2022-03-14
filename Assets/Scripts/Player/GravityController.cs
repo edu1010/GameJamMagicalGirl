@@ -10,14 +10,14 @@ public class GravityController : MonoBehaviour
     [Header("Jump settings")]
     public float m_GravityLongJump = 5f;
     public float m_GravityShortJump = 10f;
-    private Movement m_movement;
+    private PlayerController m_movement;
     [Tooltip("Tiempo manteniendo el boton para que siga siendo long jump")]
     public float m_TimePreesLong = 2f;
     public float m_CurrentTimeInAir = 0f;
     bool m_IsJumping = false;
     private void Awake()
     {
-        m_movement = GetComponent<Movement>();
+        m_movement = GetComponent<PlayerController>();
     }
     private void Update()
     {

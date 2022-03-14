@@ -9,7 +9,7 @@ public enum PlayerStates
     HackAndSlash
 }
 [RequireComponent(typeof(CharacterController))]
-public class Movement : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     
     Rigidbody m_rigidbody;
@@ -22,6 +22,7 @@ public class Movement : MonoBehaviour
     CharacterController m_CharacterController;
     float m_time = 0f;
     [Header("Jump")]
+
     public float m_VerticalSpeed = 0.0f;
     public float m_GravityMultiplayer = 10.0f;
     GravityController m_gravityController;
@@ -30,12 +31,21 @@ public class Movement : MonoBehaviour
     PlayerStates m_PlayerStates = PlayerStates.Shooter;
     int m_CurrentState = 0;
     bool m_attackPressed = false;
+
     [Header("Hack and Slash")]
     public GameObject m_LeftHand;
     public GameObject m_RightHand;
     Animator m_AnimatorLeft;
     Animator m_AnimatorRight;
     public int m_CurrentCombo = 0;
+    [Header("Shotter")]
+    public GameObject m_Bullet;
+    public Transform m_Firepoint;
+    [Tooltip(" avoid hierarchy get messy")]
+    public Transform m_BulletParent;
+    [Header("Canvas")]
+    public GameObject m_canvasShoot;
+    public GameObject m_canvasHackAndSalsh;
     // Start is called before the first frame update
     void Start()
     {
@@ -45,6 +55,8 @@ public class Movement : MonoBehaviour
         m_PlayerStates = PlayerStates.Shooter;
         m_AnimatorLeft = m_LeftHand.GetComponent<Animator>();
         m_AnimatorRight = m_RightHand.GetComponent<Animator>();
+        m_canvasShoot.SetActive(true);
+        m_canvasHackAndSalsh.SetActive(false);
     }
 
     // Update is called once per frame
@@ -55,12 +67,17 @@ public class Movement : MonoBehaviour
             case (PlayerStates.Shooter):
                 MovePlayer();
                 RotatePlayerWithCamera();
+                if (m_attackPressed)
+                {
+                    ShootAttack();
+                }
                 break;
             case (PlayerStates.HackAndSlash):
                 MovePlayer();
                 RotatePlayerWithCamera();
                 if (m_attackPressed)
                 {
+                    m_attackPressed = false;
                     AttackCombo();
                 }
                 break;
@@ -119,6 +136,15 @@ public class Movement : MonoBehaviour
             }
         }
         
+    }
+    public void ShootAttack()
+    {
+        RaycastHit l_hit;
+        GameObject l_Bullet = GameObject.Instantiate(m_Bullet, m_Firepoint.position, Quaternion.identity, m_BulletParent);//Hacer pool luego
+        Ray l_Ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+        var l_bullet = l_Bullet.GetComponent<Bullet>();
+        l_bullet.m_dir = l_Ray.direction;
+        l_bullet.transform.position = Camera.main.transform.position;
     }
     #region inputs
     public void OnMove(InputAction.CallbackContext context)
@@ -187,10 +213,14 @@ public class Movement : MonoBehaviour
         if (m_PlayerStates == 0)
         {
             m_PlayerStates = PlayerStates.HackAndSlash;
+            m_canvasShoot.SetActive(false);
+            m_canvasHackAndSalsh.SetActive(true);
         }
         else
         {
             m_PlayerStates = PlayerStates.Shooter;
+            m_canvasShoot.SetActive(true);
+            m_canvasHackAndSalsh.SetActive(false);
         }
 
         Debug.Log("mouse " + m_PlayerStates);
