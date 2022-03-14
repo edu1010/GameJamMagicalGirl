@@ -144,7 +144,7 @@ public class PlayerController : MonoBehaviour
         Ray l_Ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
         var l_bullet = l_Bullet.GetComponent<Bullet>();
         l_bullet.m_dir = l_Ray.direction;
-        l_bullet.transform.position = Camera.main.transform.position;
+        //l_bullet.transform.position = Camera.main.transform.position;
     }
     #region inputs
     public void OnMove(InputAction.CallbackContext context)
